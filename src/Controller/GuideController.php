@@ -4,18 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Organization;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -37,7 +32,7 @@ class GuideController extends AbstractController
     {
         $organizations = $this->getDoctrine()
             ->getRepository(Category::class)->find($categoryId)->getOrganizations();
-        $jsonContent = $this->serializer->serialize(['success' => 'getOrganizationInfo', 'data' => $organizations], 'json', array('groups' => ['default']));
+        $jsonContent = $this->serializer->serialize(['status' => 'success', 'data' => $organizations], 'json', array('groups' => ['default']));
         return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 
@@ -48,7 +43,7 @@ class GuideController extends AbstractController
     {
         $organization = $this->getDoctrine()
             ->getRepository(Organization::class)->find($organizationId);
-        $jsonContent = $this->serializer->serialize(['success' => 'getOrganizationInfo', 'data' => $organization], 'json', array('groups' => ['default']));
+        $jsonContent = $this->serializer->serialize(['status' => 'success', 'data' => $organization], 'json', array('groups' => ['default']));
         return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 
@@ -58,12 +53,23 @@ class GuideController extends AbstractController
     public function findOrganizationsByName(Request $request)
     {
         $name = $request->query->get('name');
+//        if (empty($name)) {
+//            throw new BadRequestHttpException('Invalid parameters');
+//        }
         $organizations = $this->getDoctrine()
             ->getRepository(Organization::class)->findByName($name);
-        $jsonContent = $this->serializer->serialize(['success' => 'getOrganizationInfo', 'data' => $organizations], 'json', array('groups' => ['default']));
+        $jsonContent = $this->serializer->serialize(['status' => 'success', 'data' => $organizations], 'json', array('groups' => ['default']));
         return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
-//        return $this->render('guide/index.html.twig', [
-//            'controller_name' => 'GuideController',
-//        ]);
+    }
+
+    /**
+     * @Route("/top-categories", name="categories_list")
+     */
+    public function getTopCategories()
+    {
+        $categories = $this->getDoctrine()
+            ->getRepository(Category::class)->findBy(array('parent' => null));
+        $jsonContent = $this->serializer->serialize(['status' => 'success', 'data' => $categories], 'json', array('groups' => ['default', 'references'], AbstractNormalizer::IGNORED_ATTRIBUTES => ['organizations']));
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 }
