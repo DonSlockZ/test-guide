@@ -25,8 +25,8 @@ class OrganizationRepository extends ServiceEntityRepository
     public function findByName($name)
     {
         return $this->createQueryBuilder('o')
-            ->andWhere('o.name LIKE :val')
-            ->setParameter('val', "%$name%")
+            ->andWhere('o.name LIKE :name')
+            ->setParameter('name', "%$name%")
             ->getQuery()
             ->getResult();
     }

@@ -40,6 +40,7 @@ class Category
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Organization", mappedBy="category")
+     * @Groups({"references"})
      */
     private $organizations;
 

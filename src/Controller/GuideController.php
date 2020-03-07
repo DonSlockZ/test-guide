@@ -37,15 +37,8 @@ class GuideController extends AbstractController
     {
         $organizations = $this->getDoctrine()
             ->getRepository(Category::class)->find($categoryId)->getOrganizations();
-        $data = [];
-        foreach ($organizations as $organization) {
-            $data[] = $organization->getName();
-        }
-//        $data = $this->serializer->serialize($organizations->toArray(), JsonEncoder::FORMAT);
-        return new JsonResponse(['success' => 'getCategoryOrganizations', 'data' => $data]);
-//        return $this->render('guide/index.html.twig', [
-//            'controller_name' => 'GuideController',
-//        ]);
+        $jsonContent = $this->serializer->serialize(['success' => 'getOrganizationInfo', 'data' => $organizations], 'json', array('groups' => ['default']));
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 
     /**
@@ -67,12 +60,8 @@ class GuideController extends AbstractController
         $name = $request->query->get('name');
         $organizations = $this->getDoctrine()
             ->getRepository(Organization::class)->findByName($name);
-        $data = [];
-        foreach ($organizations as $organization) {
-            $data[] = $organization->getName();
-        }
-//        $data = $this->serializer->serialize($organizations->toArray(), JsonEncoder::FORMAT);
-        return new JsonResponse(['success' => 'findOrganizationsByName', 'data' => $data]);
+        $jsonContent = $this->serializer->serialize(['success' => 'getOrganizationInfo', 'data' => $organizations], 'json', array('groups' => ['default']));
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
 //        return $this->render('guide/index.html.twig', [
 //            'controller_name' => 'GuideController',
 //        ]);
