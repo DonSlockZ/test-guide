@@ -1,10 +1,7 @@
 <template>
     <div>
         <div>
-            <form>
-                <label for="organizationSearch">Поиск организации</label>
-                <input type="search" name="organization" id="organizationSearch">
-            </form>
+            <organization-search/>
         </div>
         <div>
 <!--            <h3>Рубрики</h3>-->
@@ -42,16 +39,19 @@
 
 <script>
     import CategoryList from "../components/CategoryList";
+    import OrganizationSearch from "../components/OrganizationSearch";
 
     export default {
         name: "Guide",
         components: {
-            CategoryList
+            CategoryList,
+            OrganizationSearch
         },
         data() {
             return {
                 name: "",
-                selectedTopCategoryId: null
+                selectedTopCategoryId: null,
+                searchName: ""
             };
         },
         computed: {
@@ -77,11 +77,17 @@
         methods: {
             selectTopCategory(categoryId) {
                 this.selectedTopCategoryId = categoryId;
-            }
+            },
         }
     }
 </script>
 
 <style scoped>
-
+    li {
+        cursor: pointer;
+        color: rgb(0, 0, 0);
+    }
+    li:visited {
+        color: rgb(85, 26, 139);
+    }
 </style>

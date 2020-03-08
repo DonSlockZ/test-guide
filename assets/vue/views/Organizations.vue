@@ -1,8 +1,12 @@
 <template>
     <div>
         <div><a href="#" @click.prevent="$router.back()">Назад</a></div>
-        <div v-if="!isCategoryLoading">
-            <h3>{{category.name}}</h3>
+
+        <div v-if="categoryId">
+            <h3 v-if="!isCategoryLoading">{{category.name}}</h3>
+        </div>
+        <div v-else>
+            <organization-search/>
         </div>
 
         <div v-if="isLoading">
@@ -33,6 +37,7 @@
 
 <script>
     import Organization from "../components/Organization";
+    import OrganizationSearch from "../components/OrganizationSearch";
 
     export default {
         name: "Organizations",
@@ -47,11 +52,12 @@
             }
         },
         components: {
-            Organization
+            Organization,
+            OrganizationSearch
         },
         data() {
             return {
-                name: ""
+                searchNameString: ""
             };
         },
         computed: {
@@ -78,14 +84,25 @@
             },
         },
         created() {
-            if (this.categoryId) {
-                this.$store.dispatch("organization/getByCategory", this.categoryId);
-            } else if (this.searchName) {
-                this.$store.dispatch("organization/findByName", this.searchName);
-            }
-            this.$store.dispatch("category/getAll");
+            this.searchNameString = this.searchName;
+            this.fetch();
+        },
+        // Is called when this component reused in the same route.
+        // New props values can be fetched from 'to' argument
+        beforeRouteUpdate (to, from, next) {
+            this.searchNameString = to.query.searchName;
+            this.fetch();
+            next();
         },
         methods: {
+            fetch() {
+                if (this.categoryId) {
+                    this.$store.dispatch("organization/getByCategory", this.categoryId);
+                    this.$store.dispatch("category/getAll");
+                } else if (this.searchNameString) {
+                    this.$store.dispatch("organization/findByName", this.searchNameString);
+                }
+            }
         }
     };
 </script>

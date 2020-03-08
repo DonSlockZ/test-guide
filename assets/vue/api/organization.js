@@ -8,6 +8,10 @@ export default {
         return axios.get("/api/categories/" + categoryId + "/organizations");
     },
     findByName(searchName) {
-        return axios.get("/api/organizations/" + searchName);
+        return axios.get("/api/organizations", {
+            params: {
+                name: searchName
+            }
+        });
     }
 };

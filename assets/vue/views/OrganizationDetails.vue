@@ -5,7 +5,7 @@
             <p>Загрузка...</p>
         </div>
         <div v-else>
-            <h3>{{organization.name}}</h3>
+            <h3>Информация об организации</h3>
             <organization :name="organization.name" :address="organization.address" :phone="organization.phone" :description="organization.description"/>
         </div>
     </div>
