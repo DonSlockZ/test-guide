@@ -14,6 +14,11 @@
             // NOTE - https://vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
             CategoryList: () => import('../components/CategoryList')
         },
+        data() {
+            return {
+                selectedCategory: null
+            };
+        },
         props: {
             id: {
                 type: Number,

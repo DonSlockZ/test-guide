@@ -1,8 +1,8 @@
 import OrganizationAPI from "../api/organization";
 
-const FETCHING_ORGANIZATIONS = "FETCHING_ORGANIZATIONS",
-    FETCHING_ORGANIZATIONS_SUCCESS = "FETCHING_ORGANIZATIONS_SUCCESS",
-    FETCHING_ORGANIZATIONS_ERROR = "FETCHING_ORGANIZATIONS_ERROR";
+const FETCHING_ORGANIZATIONS = "FETCHING_ORGANIZATIONS";
+const FETCHING_ORGANIZATIONS_SUCCESS = "FETCHING_ORGANIZATIONS_SUCCESS";
+const FETCHING_ORGANIZATIONS_ERROR = "FETCHING_ORGANIZATIONS_ERROR";
 
 export default {
     namespaced: true,
@@ -46,10 +46,32 @@ export default {
         }
     },
     actions: {
-        async findAll({ commit }) {
+        async getAll({ commit }) {
             commit(FETCHING_ORGANIZATIONS);
             try {
-                let response = await OrganizationAPI.findAll();
+                let response = await OrganizationAPI.getAll();
+                commit(FETCHING_ORGANIZATIONS_SUCCESS, response.data.data);
+                return response.data.data;
+            } catch (error) {
+                commit(FETCHING_ORGANIZATIONS_ERROR, error);
+                return null;
+            }
+        },
+        async getByCategory({ commit }, categoryId) {
+            commit(FETCHING_ORGANIZATIONS);
+            try {
+                let response = await OrganizationAPI.getByCategory(categoryId);
+                commit(FETCHING_ORGANIZATIONS_SUCCESS, response.data.data);
+                return response.data.data;
+            } catch (error) {
+                commit(FETCHING_ORGANIZATIONS_ERROR, error);
+                return null;
+            }
+        },
+        async findByName({ commit }, searchName) {
+            commit(FETCHING_ORGANIZATIONS);
+            try {
+                let response = await OrganizationAPI.findByName(searchName);
                 commit(FETCHING_ORGANIZATIONS_SUCCESS, response.data.data);
                 return response.data.data;
             } catch (error) {

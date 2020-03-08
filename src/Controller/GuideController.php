@@ -72,4 +72,15 @@ class GuideController extends AbstractController
         $jsonContent = $this->serializer->serialize(['status' => 'success', 'data' => $categories], 'json', array('groups' => ['default', 'references'], AbstractNormalizer::IGNORED_ATTRIBUTES => ['organizations']));
         return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
+
+    /**
+     * @Route("/categories", name="categories")
+     */
+    public function getCategories()
+    {
+        $categories = $this->getDoctrine()
+            ->getRepository(Category::class)->findAll();
+        $jsonContent = $this->serializer->serialize(['status' => 'success', 'data' => $categories], 'json', array('groups' => ['default']));
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
+    }
 }

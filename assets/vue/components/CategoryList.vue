@@ -1,9 +1,6 @@
 <template>
     <ul>
-        <template
-                v-for="category in categories"
-        >
-<!--            <li>{{category.name}}</li>-->
+        <template v-for="category in categories">
             <category-list-item :id="category.id" :name="category.name" :categories="category.categories"/>
         </template>
     </ul>

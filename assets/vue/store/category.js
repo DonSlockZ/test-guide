@@ -9,7 +9,8 @@ export default {
     state: {
         isLoading: false,
         error: null,
-        categories: []
+        categories: [],
+        selectedCategory: {}
     },
     getters: {
         isLoading(state) {
@@ -26,7 +27,7 @@ export default {
         },
         categories(state) {
             return state.categories;
-        }
+        },
     },
     mutations: {
         [FETCHING_CATEGORIES](state) {
@@ -50,6 +51,17 @@ export default {
             commit(FETCHING_CATEGORIES);
             try {
                 let response = await CategoryAPI.top();
+                commit(FETCHING_CATEGORIES_SUCCESS, response.data.data);
+                return response.data.data;
+            } catch (error) {
+                commit(FETCHING_CATEGORIES_ERROR, error);
+                return null;
+            }
+        },
+        async getAll({ commit }) {
+            commit(FETCHING_CATEGORIES);
+            try {
+                let response = await CategoryAPI.getAll();
                 commit(FETCHING_CATEGORIES_SUCCESS, response.data.data);
                 return response.data.data;
             } catch (error) {

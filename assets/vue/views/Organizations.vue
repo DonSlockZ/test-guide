@@ -1,43 +1,32 @@
 <template>
     <div>
-        <div><a @click="$router.go(-1)">Назад</a></div>
-        <div class="row col">
-            <h1>Organizations</h1>
+        <div><a href="#" @click.prevent="$router.back()">Назад</a></div>
+        <div v-if="!isCategoryLoading">
+            <h3>{{category.name}}</h3>
         </div>
 
-        <div
-                v-if="isLoading"
-                class="row col"
-        >
-            <p>Loading...</p>
+        <div v-if="isLoading">
+            <p>Загрузка...</p>
         </div>
 
-        <div
-                v-else-if="hasError"
-                class="row col"
-        >
-            <div
-                    class="alert alert-danger"
-                    role="alert"
-            >
+        <div v-else-if="hasError">
+            <div>
                 {{ error }}
             </div>
         </div>
 
-        <div
-                v-else-if="!hasOrganizations"
-                class="row col"
-        >
-            No organizations!
+        <div v-else-if="!hasOrganizations">
+            Нет данных
         </div>
 
         <div
                 v-for="organization in organizations"
                 v-else
                 :key="organization.id"
-                class="row col"
         >
-            <organization :name="organization.name" />
+            <div>
+                <router-link :to="{ name: 'organization', params: { organizationId: organization.id }}">{{organization.name}}</router-link>
+            </div>
         </div>
     </div>
 </template>
@@ -47,6 +36,16 @@
 
     export default {
         name: "Organizations",
+        props: {
+            categoryId: {
+                type: Number,
+                required: false
+            },
+            searchName: {
+                type: String,
+                required: false
+            }
+        },
         components: {
             Organization
         },
@@ -70,10 +69,21 @@
             },
             organizations() {
                 return this.$store.getters["organization/organizations"];
-            }
+            },
+            category() {
+                return this.$store.getters["category/categories"].filter(category => category.id === this.categoryId)[0];
+            },
+            isCategoryLoading() {
+                return this.$store.getters["category/isLoading"];
+            },
         },
         created() {
-            this.$store.dispatch("organization/findAll");
+            if (this.categoryId) {
+                this.$store.dispatch("organization/getByCategory", this.categoryId);
+            } else if (this.searchName) {
+                this.$store.dispatch("organization/findByName", this.searchName);
+            }
+            this.$store.dispatch("category/getAll");
         },
         methods: {
         }
