@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Entity\Category;
 use App\Entity\Organization;
@@ -30,8 +30,10 @@ class GuideController extends AbstractController
      */
     public function getCategoryOrganizations(int $categoryId)
     {
-        $organizations = $this->getDoctrine()
-            ->getRepository(Category::class)->find($categoryId)->getOrganizations();
+        $category = $this->getDoctrine()
+            ->getRepository(Category::class)->find($categoryId);
+        $organizations = $category ? $category->getOrganizations() : [];
+
         $jsonContent = $this->serializer->serialize(['status' => 'success', 'data' => $organizations], 'json', array('groups' => ['default']));
         return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
@@ -54,7 +56,7 @@ class GuideController extends AbstractController
     {
         $name = $request->query->get('name');
 //        if (empty($name)) {
-//            throw new BadRequestHttpException('Invalid parameters');
+//            throw new BadRequestHttpException('Parameter "name" is required');
 //        }
         $organizations = $this->getDoctrine()
             ->getRepository(Organization::class)->findByName($name);

@@ -8,6 +8,12 @@
             <h3>Информация об организации</h3>
             <organization :name="organization.name" :address="organization.address" :phone="organization.phone" :description="organization.description"/>
         </div>
+
+        <div v-if="hasError">
+            <div>
+                Ошибка: {{ error }}
+            </div>
+        </div>
     </div>
 </template>
 

@@ -14,10 +14,19 @@
 <script>
     export default {
         name: "OrganizationSearch",
+        props: {
+            presetSearchName: {
+                type: String,
+                required: false
+            }
+        },
         data() {
             return {
                 searchName: ""
             };
+        },
+        created() {
+            this.searchName = this.presetSearchName;
         },
         methods: {
             findOrganizations() {

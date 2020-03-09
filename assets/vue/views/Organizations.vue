@@ -6,7 +6,7 @@
             <h3 v-if="!isCategoryLoading">{{category.name}}</h3>
         </div>
         <div v-else>
-            <organization-search/>
+            <organization-search :preset-search-name="searchNameString"/>
         </div>
 
         <div v-if="isLoading">
@@ -15,7 +15,7 @@
 
         <div v-else-if="hasError">
             <div>
-                {{ error }}
+                Ошибка: {{ error }}
             </div>
         </div>
 
