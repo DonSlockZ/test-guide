@@ -21,7 +21,7 @@ class OrganizationFixture extends BaseFixture implements FixtureGroupInterface
 
     public function loadData(ObjectManager $manager)
     {
-        $categories = $manager->getRepository(Category::class)->findAll();
+        $categories = $manager->getRepository(Category::class)->findSubcategories();
         foreach ($categories as $category) {
             $this->createMany(Organization::class, rand(1, 5), function(Organization $organization, $count) use ($category) {
                 $organization->setName($this->faker->company);
